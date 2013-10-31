@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+        <artifactId>vur</artifactId>
+        <groupId>org.vulpe</groupId>
+        <version>1.0</version>
+    </parent>
+
+	<groupId>org.vulpe.vur</groupId>
+	<artifactId>vur-web</artifactId>
+	<version>1.0</version>
+	<packaging>war</packaging>
+	<name>vur - Web</name>
+	<description>vur</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.vulpe</groupId>
+			<artifactId>vulpe-web-struts2</artifactId>
+			<version>${vulpe.version}</version>
+			<type>war</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.vulpe</groupId>
+			<artifactId>vulpe-controller-struts2</artifactId>
+			<version>${vulpe.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.vulpe.vur</groupId>
+			<artifactId>vur-commons</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.vulpe.vur</groupId>
+			<artifactId>vur-domains</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.vulpe.vur</groupId>
+			<artifactId>vur-core</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.vulpe.vur</groupId>
+			<artifactId>vur-controller</artifactId>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>
+				<configuration>
+					<warName>vur</warName>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<id>package</id>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<macrodef name="trim">
+									<attribute name="input" />
+									<attribute name="property" />
+									<sequential>
+										<tempfile property="temp.file" destDir="target" />
+										<echo file="${temp.file}" message="@{input}" />
+										<move file="${temp.file}" tofile="${temp.file}.2">
+											<filterchain>
+												<deletecharacters chars="\n\r" />
+												<trim />
+												<ignoreblank />
+											</filterchain>
+										</move>
+										<loadfile property="@{property}" srcFile="${temp.file}.2" />
+										<delete file="${temp.file}.2" failonerror="false" />
+									</sequential>
+								</macrodef>
+								<taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="maven.plugin.classpath" />
+								<property environment="env" />
+								<trim input="${env.TOMCAT_HOME}" property="tomcat.home" />
+								<if>
+									<equals arg1="${deployServer}" arg2="tomcat" />
+									<then>
+										<if>
+											<equals arg1="${deployMode}" arg2="quick" />
+											<then>
+												<copy todir="${tomcat.home}/webapps/vur/" overwrite="true">
+													<fileset dir="${project.build.directory}/vur-web-1.0/" excludes="**/*.jar,**/*.class,**/*.xml,**/*.properties" />
+												</copy>
+											</then>
+											<elseif>
+												<equals arg1="${deployMode}" arg2="quick-restart" />
+												<then>
+													<copy todir="${tomcat.home}/webapps/vur/" overwrite="true">
+														<fileset dir="${project.build.directory}/vur-web-1.0/" excludes="**/*.jar" />
+													</copy>
+												</then>
+											</elseif>
+											<else>
+												<if>
+													<equals arg1="${unpack}" arg2="true" />
+													<then>
+														<delete dir="${tomcat.home}/webapps/vur" />
+														<if>
+															<equals arg1="${deleteWork}" arg2="true" />
+															<then>
+																<delete dir="${tomcat.home}/work/Catalina/localhost/vur" />
+															</then>
+														</if>
+														<copy todir="${tomcat.home}/webapps/vur">
+															<fileset dir="${project.build.directory}/vur-web-1.0/" includes="**/**" />
+														</copy>
+														<!-- <unwar src="${project.build.directory}/vur.war" dest="${tomcat.home}/webapps/vur" />
+-->
+													</then>
+													<else>
+														<delete file="${tomcat.home}/webapps/vur.war" />
+														<copy todir="${tomcat.home}/webapps/">
+															<fileset dir="${project.build.directory}" includes="vur.war" />
+														</copy>
+													</else>
+												</if>
+											</else>
+										</if>
+									</then>
+								</if>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>ant-contrib</groupId>
+						<artifactId>ant-contrib</artifactId>
+						<version>1.0b3</version>
+						<exclusions>
+							<exclusion>
+								<groupId>ant</groupId>
+								<artifactId>ant</artifactId>
+							</exclusion>
+						</exclusions>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.ant</groupId>
+						<artifactId>ant-nodeps</artifactId>
+						<version>1.8.1</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
+</project>

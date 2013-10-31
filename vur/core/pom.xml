@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+        <artifactId>vur</artifactId>
+        <groupId>org.vulpe</groupId>
+        <version>1.0</version>
+    </parent>
+
+	<groupId>org.vulpe.vur</groupId>
+	<artifactId>vur-core</artifactId>
+	<version>1.0</version>
+	<packaging>jar</packaging>
+	<name>vur - Core</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.vulpe.vur</groupId>
+			<artifactId>vur-domains</artifactId>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="maven.plugin.classpath" />
+								<property name="tools.dir" value="${settings.localRepository}/org/vulpe/vulpe-fox/${vulpe.version}/vulpe-fox-${vulpe.version}/tools" />
+								<property name="tools.dir.present" value="false" />
+								<available file="${tools.dir}" property="tools.dir.present" type="dir" />
+								<if>
+									<equals arg1="${tools.dir.present}" arg2="false" />
+									<then>
+										<unjar src="${settings.localRepository}/org/vulpe/vulpe-fox/${vulpe.version}/vulpe-fox-${vulpe.version}.jar" dest="${settings.localRepository}/org/vulpe/vulpe-fox/${vulpe.version}/vulpe-fox-${vulpe.version}" />
+									</then>
+								</if>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>ant-contrib</groupId>
+						<artifactId>ant-contrib</artifactId>
+						<version>1.0b3</version>
+						<exclusions>
+							<exclusion>
+								<groupId>ant</groupId>
+								<artifactId>ant</artifactId>
+							</exclusion>
+						</exclusions>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.ant</groupId>
+						<artifactId>ant-nodeps</artifactId>
+						<version>1.8.1</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>apt-maven-plugin</artifactId>
+				<version>1.0-alpha-5</version>
+				<configuration>
+					<factory>org.vulpe.fox.apt.freemarker.VulpeFreemarkerProcessorFactory</factory>
+					<options>
+						<param>template=${settings.localRepository}/org/vulpe/vulpe-fox/${vulpe.version}/vulpe-fox-${vulpe.version}/tools/services/templates/plugin.ftl</param>
+						<param>component=core</param>
+						<param>package=org.vulpe.vur.core.model</param>
+						<param>services=POJO</param>
+						<param>serviceLookup=spring</param>
+						<param>applicationServer=${deployServer}</param>
+					</options>
+					<sourceOutputDirectory>${basedir}/generated/main/java</sourceOutputDirectory>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.vulpe</groupId>
+						<artifactId>vulpe-fox</artifactId>
+						<version>${vulpe.version}</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>process</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.7</version>
+				<configuration>
+					<sources>
+						<source>${basedir}/generated/main/java</source>
+						<source>${basedir}/generated/main/resources</source>
+					</sources>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
