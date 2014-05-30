@@ -53,7 +53,7 @@
 	<classpathentry kind="var" path="M2_REPO/org/vulpe/vulpe-security/1.0.2.API3/vulpe-security-1.0.2.API3.jar" sourcepath="M2_REPO/org/vulpe/vulpe-security/1.0.2.API3/vulpe-security-1.0.2.API3-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/vulpe/vulpe-security-struts2/1.0.2.API3/vulpe-security-struts2-1.0.2.API3.jar" sourcepath="M2_REPO/org/vulpe/vulpe-security-struts2/1.0.2.API3/vulpe-security-struts2-1.0.2.API3-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/net/sf/jasperreports/jasperreports/4.5.0/jasperreports-4.5.0.jar" sourcepath="M2_REPO/net/sf/jasperreports/jasperreports/4.5.0/jasperreports-4.5.0-sources.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/projectlombok/lombok/0.10.8/lombok-0.10.8.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/projectlombok/lombok/1.14.0/lombok-1.14.0.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/vulpe/vur/vur-core/1.0/vur-core-1.0.jar" sourcepath="M2_REPO/org/vulpe/vur/vur-core/1.0/vur-core-1.0-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/vulpe/vur/vur-domains/1.0/vur-domains-1.0.jar" sourcepath="M2_REPO/org/vulpe/vur/vur-domains/1.0/vur-domains-1.0-sources.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
